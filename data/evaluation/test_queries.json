@@ -1,0 +1,95 @@
+{
+  "version": "1.0",
+  "queries": [
+    {
+      "query": "What are the main treatments for COPD?",
+      "category": "treatment",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What inhalers are used for COPD management?",
+      "category": "treatment",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "When should corticosteroids be used in COPD?",
+      "category": "treatment",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What is the role of bronchodilators in COPD treatment?",
+      "category": "treatment",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What is dupilumab and how does it help COPD patients?",
+      "category": "medication",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What are LAMA and LABA medications?",
+      "category": "medication",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What is the recommended dose of tiotropium for COPD?",
+      "category": "medication",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "How is COPD diagnosed?",
+      "category": "diagnosis",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What is the GOLD classification for COPD?",
+      "category": "diagnosis",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What FEV1 values indicate COPD severity?",
+      "category": "diagnosis",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "How should COPD exacerbations be managed?",
+      "category": "exacerbation",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What are the signs of a COPD exacerbation?",
+      "category": "exacerbation",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "When should a COPD patient be hospitalized?",
+      "category": "exacerbation",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "What lifestyle changes help manage COPD?",
+      "category": "lifestyle",
+      "expected_sources": [],
+      "ground_truth": null
+    },
+    {
+      "query": "Is pulmonary rehabilitation effective for COPD?",
+      "category": "lifestyle",
+      "expected_sources": [],
+      "ground_truth": null
+    }
+  ]
+}

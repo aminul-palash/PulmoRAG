@@ -1,0 +1,42 @@
+services:
+  rag-app:
+    build: .
+    container_name: pulmorag-app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./demo.py:/app/demo.py
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+      - ./models:/app/models
+      - ./scripts:/app/scripts
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_ENV=${PINECONE_ENV}
+      - LOCAL_MODEL_PATH=/app/models/mistrallite.Q4_K_M.gguf
+      - USE_LOCAL_LLM=${USE_LOCAL_LLM:-auto}
+    networks:
+      - rag-network
+
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - chromadb_data:/chroma/data
+    networks:
+      - rag-network
+
+networks:
+  rag-network:
+    driver: bridge
+
+volumes:
+  chromadb_data:

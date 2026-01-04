@@ -1,0 +1,2 @@
+# This directory stores LLM model files (GGUF format)
+# Download using: python scripts/download_model.py
