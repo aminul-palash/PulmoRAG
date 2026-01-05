@@ -15,7 +15,7 @@ class DenseRetriever:
     def __init__(
         self,
         vectorstore: Optional[ChromaVectorStore] = None,
-        collection_name: str = "copd_documents",
+        collection_name: str = "pulmonary_documents",
         embedder: Optional[BaseEmbedder] = None,
     ):
         """

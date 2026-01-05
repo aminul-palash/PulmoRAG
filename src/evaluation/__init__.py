@@ -24,6 +24,7 @@ from src.evaluation.evaluator import (
 from src.evaluation.dataset import (
     TestQuery,
     TestDataset,
+    create_default_pulmonary_dataset,
     create_default_copd_dataset,
 )
 
@@ -45,5 +46,6 @@ __all__ = [
     # Dataset
     "TestQuery",
     "TestDataset",
+    "create_default_pulmonary_dataset",
     "create_default_copd_dataset",
 ]

@@ -24,7 +24,7 @@ class Config:
     CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
     CHROMA_PORT = int(os.getenv("CHROMA_PORT", 8000))
     CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", str(PROJECT_ROOT / "data" / "vectordb"))
-    CHROMA_COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "copd_documents")
+    CHROMA_COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "pulmonary_documents")
     PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "pulmorag-index")
 
     # Model Configuration

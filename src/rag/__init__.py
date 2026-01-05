@@ -21,6 +21,7 @@ class RAGResponse:
     sources: List[dict]
     context_used: str
     token_count: int
+    relevance_level: str = "high"  # 'high', 'medium', 'low', or 'none'
 
 
 class RAGPipeline:
@@ -41,9 +42,14 @@ class RAGPipeline:
     MAX_CONTEXT_TOKENS = 1500
     CHARS_PER_TOKEN = 4  # Approximate for token estimation
     
+    # Relevance thresholds for warning users
+    # These are tuned for cross-encoder reranker scores (typically -10 to +10 range)
+    LOW_RELEVANCE_THRESHOLD = -5.0  # Below this = likely out of scope
+    MEDIUM_RELEVANCE_THRESHOLD = 0.0  # Below this = partial match
+    
     def __init__(
         self,
-        collection_name: str = "copd_documents",
+        collection_name: str = "pulmonary_documents",
         llm = None,
         use_hybrid: bool = True,
         use_reranker: Optional[bool] = None,
@@ -169,32 +175,95 @@ class RAGPipeline:
         context = "\n\n".join(context_parts)
         return context, sources
     
-    def build_prompt(self, query: str, context: str) -> str:
+    def _assess_relevance(self, sources: List[dict]) -> str:
+        """
+        Assess overall relevance quality of retrieved sources.
+        
+        Returns:
+            'high' - Good matches found
+            'medium' - Partial matches, may be related topics
+            'low' - Poor matches, likely out of knowledge scope
+            'none' - No sources found
+        """
+        if not sources:
+            return "none"
+        
+        # Use the best (first) source score
+        best_score = sources[0].get("score", 0)
+        
+        if best_score >= self.MEDIUM_RELEVANCE_THRESHOLD:
+            return "high"
+        elif best_score >= self.LOW_RELEVANCE_THRESHOLD:
+            return "medium"
+        else:
+            return "low"
+    
+    def build_prompt(self, query: str, context: str, relevance_level: str = "high") -> str:
         """
         Build the final prompt with context injection.
         
         Args:
             query: User query
             context: Formatted context from retrieval
+            relevance_level: 'high', 'medium', 'low', or 'none'
             
         Returns:
             Complete prompt for LLM
         """
-        if not context:
+        if not context or relevance_level == "none":
             # No relevant context found
-            return f"""You are PulmoRAG, a medical information assistant for COPD.
+            return f"""You are PulmoRAG, a medical information assistant for pulmonary diseases.
 
 The user asked: "{query}"
 
 I could not find relevant information in my medical knowledge base for this query.
 Please provide a helpful response explaining that:
 1. No specific sources were found for this query
-2. Suggest rephrasing or asking about specific COPD topics
+2. Suggest rephrasing or asking about specific pulmonary disease topics (COPD, asthma, pneumonia, etc.)
 3. Remind them to consult healthcare professionals
 
 Answer:"""
         
-        return f"""You are PulmoRAG, a medical information assistant for COPD (Chronic Obstructive Pulmonary Disease).
+        if relevance_level == "low":
+            # Low relevance - likely out of scope query
+            return f"""You are PulmoRAG, a medical information assistant for pulmonary diseases.
+
+The user asked: "{query}"
+
+⚠️ IMPORTANT: The sources below have LOW RELEVANCE to this query. This topic may not be well-covered in my knowledge base.
+
+{context}
+
+Instructions:
+- First, clearly state that this query may be OUTSIDE the scope of available sources
+- If the sources contain ANY relevant information, provide it with appropriate citations
+- Be honest about the limitations - don't extrapolate beyond what sources say
+- Suggest what type of specialist or resources might better address this query
+- Remind them to consult healthcare professionals
+
+Answer:"""
+        
+        if relevance_level == "medium":
+            # Medium relevance - partial match
+            return f"""You are PulmoRAG, a medical information assistant for pulmonary diseases (COPD, asthma, pneumonia, tuberculosis, lung cancer, pulmonary fibrosis, and other respiratory conditions).
+
+The sources below are PARTIALLY relevant to the query. Some information may be tangentially related.
+
+{context}
+
+Question: {query}
+
+Instructions:
+- Answer based on the sources above, noting where information is directly relevant vs. tangentially related
+- Cite sources with [1], [2], etc.
+- Be clear about what the sources DO and DON'T cover regarding this specific query
+- If the query touches on topics not covered, acknowledge this honestly
+- Always recommend consulting healthcare professionals for medical decisions
+
+Answer:"""
+        
+        # High relevance - normal prompt
+        return f"""You are PulmoRAG, a medical information assistant for pulmonary diseases (COPD, asthma, pneumonia, tuberculosis, lung cancer, pulmonary fibrosis, and other respiratory conditions).
 
 Use ONLY the following medical sources to answer the question. Cite sources using [1], [2], etc.
 If the sources don't contain enough information, say so honestly.
@@ -237,14 +306,21 @@ Answer:"""
         context, sources = self.build_context(results)
         context_tokens = self._estimate_tokens(context)
         
-        # Step 3: Build prompt
-        prompt = self.build_prompt(query, context)
+        # Step 3: Assess relevance quality
+        relevance_level = self._assess_relevance(sources)
+        if relevance_level == "low":
+            logger.warning(f"Low relevance detected for query: '{query[:50]}...' - best score: {sources[0]['score'] if sources else 'N/A'}")
+        elif relevance_level == "medium":
+            logger.info(f"Medium relevance for query - best score: {sources[0]['score'] if sources else 'N/A'}")
         
-        logger.info(f"Context: {len(sources)} sources, ~{context_tokens} tokens")
+        # Step 4: Build prompt with relevance-aware instructions
+        prompt = self.build_prompt(query, context, relevance_level)
         
-        # Step 4: Generate response
+        logger.info(f"Context: {len(sources)} sources, ~{context_tokens} tokens, relevance={relevance_level}")
+        
+        # Step 5: Generate response
         if stream:
-            return self._stream_response(prompt, sources, context, context_tokens)
+            return self._stream_response(prompt, sources, context, context_tokens, relevance_level)
         else:
             answer = self.llm.generate(
                 prompt,
@@ -257,6 +333,7 @@ Answer:"""
                 sources=sources,
                 context_used=context,
                 token_count=context_tokens,
+                relevance_level=relevance_level,
             )
     
     def _stream_response(
@@ -265,6 +342,7 @@ Answer:"""
         sources: List[dict],
         context: str,
         context_tokens: int,
+        relevance_level: str = "high",
     ) -> Generator[str, None, RAGResponse]:
         """Stream response and return final RAGResponse."""
         full_response = ""
@@ -284,4 +362,5 @@ Answer:"""
             sources=sources,
             context_used=context,
             token_count=context_tokens,
+            relevance_level=relevance_level,
         )

@@ -1,6 +1,6 @@
-# PulmoRAG - COPD Treatment RAG System
+# PulmoRAG - Pulmonary Disease RAG System
 
-RAG system for evidence-based COPD treatment information.
+RAG system for evidence-based pulmonary disease treatment information, including COPD, asthma, pneumonia, tuberculosis, and more.
 
 ## Quick Start
 
@@ -48,7 +48,7 @@ Test search with different retrieval modes:
 
 ```bash
 # Hybrid + reranking (default) - best quality
-docker compose exec rag-app python scripts/build_vector_db.py test "What is COPD treatment?"
+docker compose exec rag-app python scripts/build_vector_db.py test "What are treatments for asthma?"
 
 # Compare all methods (dense, sparse, hybrid, reranked)
 docker compose exec rag-app python scripts/build_vector_db.py compare "dupilumab FEV1"
@@ -185,7 +185,7 @@ Query → ┬→ Dense (ChromaDB) ─┐
 ### Using the Chat Interface
 
 1. Open http://localhost:8501
-2. Type your COPD-related question
+2. Type your pulmonary disease-related question
 3. View response with cited sources
 4. Click source links to see relevance scores
 
@@ -193,11 +193,12 @@ Query → ┬→ Dense (ChromaDB) ─┐
 
 | Category | Query |
 |----------|-------|
-| Treatment | "What are first-line treatments for COPD?" |
-| Medication | "When should inhaled corticosteroids be used?" |
-| Diagnosis | "How is COPD severity classified?" |
-| Exacerbation | "How to manage acute COPD exacerbation?" |
-| Lifestyle | "Does pulmonary rehabilitation help COPD?" |
+| COPD | "What are first-line treatments for COPD?" |
+| Asthma | "How is asthma different from COPD?" |
+| Pneumonia | "What antibiotics treat pneumonia?" |
+| Tuberculosis | "What is the TB treatment regimen?" |
+| Lung Cancer | "What are NSCLC treatment options?" |
+| General | "Does pulmonary rehabilitation help?" |
 
 ### Adding Custom Documents
 
@@ -214,7 +215,7 @@ docker compose exec rag-app python scripts/build_vector_db.py build --clear
 
 ### Limitations
 
-- **Scope**: COPD only (not asthma, lung cancer, etc.)
+- **Scope**: Pulmonary diseases only (respiratory conditions)
 - **Currency**: Based on indexed documents (check `data/processed/manifest.json` for dates)
 - **Not medical advice**: For informational purposes only
 - **Language**: English only

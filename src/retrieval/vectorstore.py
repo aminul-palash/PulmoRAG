@@ -29,7 +29,7 @@ class ChromaVectorStore:
     
     def __init__(
         self,
-        collection_name: str = "copd_documents",
+        collection_name: str = "pulmonary_documents",
         embedder: Optional[BaseEmbedder] = None,
         persist_directory: Optional[str] = None,
         host: Optional[str] = None,

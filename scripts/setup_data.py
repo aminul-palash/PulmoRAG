@@ -44,6 +44,7 @@ def process_documents(
     output_dir: str = "data/processed",
     chunk_size: int = 500,
     chunk_overlap: int = 50,
+    use_fast_pdf: bool = True,
 ) -> None:
     """
     Process all documents in input directory and save chunks.
@@ -53,7 +54,11 @@ def process_documents(
         output_dir: Directory to save processed chunks
         chunk_size: Target chunk size in characters
         chunk_overlap: Overlap between chunks
+        use_fast_pdf: Use PyMuPDF for faster PDF processing
     """
+    import time
+    start_time = time.time()
+    
     input_path = Path(input_dir)
     output_path = Path(output_dir)
     
@@ -62,10 +67,15 @@ def process_documents(
         logger.error(f"Input directory not found: {input_path}")
         return
     
-    # Load documents
+    # Load documents with progress
     logger.info(f"Loading documents from {input_path}...")
-    loader = DocumentLoader()
+    logger.info(f"Using {'fast (PyMuPDF)' if use_fast_pdf else 'standard (pdfplumber)'} PDF processing")
+    
+    loader = DocumentLoader(use_fast_pdf=use_fast_pdf)
     documents = loader.load_directory(input_path, recursive=True)
+    
+    load_time = time.time() - start_time
+    logger.info(f"Document loading completed in {load_time:.1f}s")
     
     if not documents:
         logger.warning("No documents found! Add documents to data/raw/ first.")
@@ -73,7 +83,7 @@ def process_documents(
         return
     
     # Process into chunks
-    logger.info(f"Processing {len(documents)} documents...")
+    logger.info(f"\nProcessing {len(documents)} documents into chunks...")
     processor = DocumentProcessor(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
@@ -93,13 +103,21 @@ def process_documents(
     save_processing_manifest(documents, chunks, output_path)
     
     # Print statistics
+    total_time = time.time() - start_time
     stats = get_chunks_statistics(chunks)
-    logger.info("Processing complete!")
-    logger.info(f"  Documents: {stats['total_chunks']} chunks from {stats['unique_sources']} files")
+    
+    logger.info("")
+    logger.info("=" * 50)
+    logger.info("✓ Processing complete!")
+    logger.info(f"  Total time: {total_time:.1f}s")
+    logger.info(f"  Documents: {stats['unique_sources']} files → {stats['total_chunks']} chunks")
     logger.info(f"  Avg chunk length: {stats['character_length']['avg']} chars")
     
     if stats.get("medical_categories"):
         logger.info(f"  Medical categories: {stats['medical_categories']}")
+    
+    logger.info(f"  Output: {chunks_file}")
+    logger.info("=" * 50)
 
 
 def main():

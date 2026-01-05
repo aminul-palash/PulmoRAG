@@ -138,86 +138,100 @@ class TestDataset:
         return iter(self.queries)
 
 
-def create_default_copd_dataset() -> TestDataset:
+def create_default_pulmonary_dataset() -> TestDataset:
     """
-    Create default COPD test dataset with sample queries.
+    Create default pulmonary disease test dataset with sample queries.
     
     Returns:
-        TestDataset with COPD-related queries
+        TestDataset with pulmonary disease-related queries
     """
     queries = [
-        # Treatment questions
+        # COPD questions
         TestQuery(
             query="What are the main treatments for COPD?",
-            category="treatment",
+            category="copd",
         ),
         TestQuery(
             query="What inhalers are used for COPD management?",
-            category="treatment",
-        ),
-        TestQuery(
-            query="When should corticosteroids be used in COPD?",
-            category="treatment",
-        ),
-        TestQuery(
-            query="What is the role of bronchodilators in COPD treatment?",
-            category="treatment",
-        ),
-        
-        # Medication-specific questions
-        TestQuery(
-            query="What is dupilumab and how does it help COPD patients?",
-            category="medication",
-        ),
-        TestQuery(
-            query="What are LAMA and LABA medications?",
-            category="medication",
-        ),
-        TestQuery(
-            query="What is the recommended dose of tiotropium for COPD?",
-            category="medication",
-        ),
-        
-        # Diagnosis questions
-        TestQuery(
-            query="How is COPD diagnosed?",
-            category="diagnosis",
+            category="copd",
         ),
         TestQuery(
             query="What is the GOLD classification for COPD?",
-            category="diagnosis",
+            category="copd",
         ),
-        TestQuery(
-            query="What FEV1 values indicate COPD severity?",
-            category="diagnosis",
-        ),
-        
-        # Exacerbation questions
         TestQuery(
             query="How should COPD exacerbations be managed?",
-            category="exacerbation",
-        ),
-        TestQuery(
-            query="What are the signs of a COPD exacerbation?",
-            category="exacerbation",
-        ),
-        TestQuery(
-            query="When should a COPD patient be hospitalized?",
-            category="exacerbation",
+            category="copd",
         ),
         
-        # Lifestyle questions
+        # Asthma questions
         TestQuery(
-            query="What lifestyle changes help manage COPD?",
-            category="lifestyle",
+            query="What are the main treatments for asthma?",
+            category="asthma",
         ),
         TestQuery(
-            query="Is pulmonary rehabilitation effective for COPD?",
-            category="lifestyle",
+            query="What is the difference between COPD and asthma?",
+            category="asthma",
+        ),
+        TestQuery(
+            query="How are asthma exacerbations managed?",
+            category="asthma",
+        ),
+        
+        # Pneumonia questions
+        TestQuery(
+            query="What antibiotics are used to treat pneumonia?",
+            category="pneumonia",
+        ),
+        TestQuery(
+            query="What are the symptoms of pneumonia?",
+            category="pneumonia",
+        ),
+        
+        # Tuberculosis questions
+        TestQuery(
+            query="What is the standard treatment regimen for tuberculosis?",
+            category="tuberculosis",
+        ),
+        TestQuery(
+            query="How is tuberculosis diagnosed?",
+            category="tuberculosis",
+        ),
+        
+        # Lung cancer questions
+        TestQuery(
+            query="What are the treatment options for non-small cell lung cancer?",
+            category="lung_cancer",
+        ),
+        TestQuery(
+            query="How is lung cancer staged?",
+            category="lung_cancer",
+        ),
+        
+        # Pulmonary fibrosis questions
+        TestQuery(
+            query="What treatments are available for pulmonary fibrosis?",
+            category="pulmonary_fibrosis",
+        ),
+        
+        # General pulmonary questions
+        TestQuery(
+            query="What is pulmonary rehabilitation and who benefits from it?",
+            category="general",
+        ),
+        TestQuery(
+            query="What lifestyle changes help manage chronic lung diseases?",
+            category="general",
         ),
     ]
     
     dataset = TestDataset(queries=queries)
-    logger.info(f"Created default COPD dataset with {len(queries)} queries")
+    logger.info(f"Created default pulmonary dataset with {len(queries)} queries")
     
     return dataset
+
+
+# Backward compatibility alias
+def create_default_copd_dataset() -> TestDataset:
+    """Deprecated: Use create_default_pulmonary_dataset instead."""
+    return create_default_pulmonary_dataset()

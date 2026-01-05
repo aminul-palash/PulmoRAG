@@ -53,8 +53,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.title("� COPD Treatment Assistant")
-st.markdown("Get evidence-based information about Chronic Obstructive Pulmonary Disease (COPD) treatment options.")
+st.title("🫁 Pulmonary Disease Assistant")
+st.markdown("Get evidence-based information about pulmonary diseases including COPD, asthma, pneumonia, tuberculosis, and more.")
 
 # Disclaimer
 st.markdown("""
@@ -191,10 +191,20 @@ docker compose restart rag-app
                 # Store sources for display
                 st.session_state.last_sources = sources
                 
-                # Build RAG prompt
-                prompt = rag_pipeline.build_prompt(user_prompt, context)
+                # Assess relevance level
+                relevance_level = rag_pipeline._assess_relevance(sources)
+                st.session_state.last_relevance = relevance_level
                 
-                logger.info(f"RAG: {len(sources)} sources, context ~{len(context)//4} tokens")
+                # Build RAG prompt with relevance-aware instructions
+                prompt = rag_pipeline.build_prompt(user_prompt, context, relevance_level)
+                
+                logger.info(f"RAG: {len(sources)} sources, context ~{len(context)//4} tokens, relevance={relevance_level}")
+                
+                # Show relevance warning before streaming if low relevance
+                if relevance_level == "low":
+                    yield "⚠️ **Note:** This query may be outside my knowledge base. The sources below have low relevance to your question.\n\n"
+                elif relevance_level == "medium":
+                    yield "ℹ️ **Note:** Found partially relevant sources. Some information may be tangentially related.\n\n"
                 
                 # Stream the response
                 for chunk in llm.generate(
@@ -209,7 +219,8 @@ docker compose restart rag-app
                 if sources:
                     yield "\n\n---\n**Sources:**\n"
                     for src in sources:
-                        yield f"- [{src['index']}] {src['source']} (relevance: {src['score']:.2f})\n"
+                        relevance_indicator = "🟢" if src['score'] >= 0 else ("🟡" if src['score'] >= -5 else "🔴")
+                        yield f"- [{src['index']}] {src['source']} {relevance_indicator} (score: {src['score']:.2f})\n"
                 return
         except Exception as e:
             logger.error(f"RAG pipeline error: {e}")
@@ -242,7 +253,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Chat input
-prompt = st.chat_input("Ask about COPD treatment...")
+prompt = st.chat_input("Ask about pulmonary diseases (COPD, asthma, pneumonia, TB, etc.)...")
 
 # Handle pending prompt from sidebar buttons
 if st.session_state.pending_prompt:

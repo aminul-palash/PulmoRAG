@@ -24,7 +24,7 @@ logger = setup_logger(__name__)
 
 def build_vector_db(
     chunks_file: str = "data/processed/chunks.jsonl",
-    collection_name: str = "copd_documents",
+    collection_name: str = "pulmonary_documents",
     embedder_type: str = "local",
     model_name: str = None,
     clear_existing: bool = False,

@@ -28,7 +28,7 @@ class HybridRetriever:
     
     def __init__(
         self,
-        collection_name: str = "copd_documents",
+        collection_name: str = "pulmonary_documents",
         dense_retriever: Optional[DenseRetriever] = None,
         sparse_retriever: Optional[SparseRetriever] = None,
         fusion_method: FusionMethod = "rrf",
