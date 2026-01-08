@@ -1,94 +1,822 @@
 {
-  "version": "1.0",
+  "version": "2.0",
+  "description": "Comprehensive test queries for PulmoRAG evaluation covering all pulmonary diseases",
+  "total_queries": 102,
   "queries": [
     {
+      "id": 1,
+      "disease": "COPD",
       "query": "What are the main treatments for COPD?",
       "category": "treatment",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 2,
+      "disease": "COPD",
       "query": "What inhalers are used for COPD management?",
       "category": "treatment",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 3,
+      "disease": "COPD",
       "query": "When should corticosteroids be used in COPD?",
       "category": "treatment",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report", "mgmt-of-COPD-exacerbations"],
       "ground_truth": null
     },
     {
+      "id": 4,
+      "disease": "COPD",
       "query": "What is the role of bronchodilators in COPD treatment?",
       "category": "treatment",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 5,
+      "disease": "COPD",
       "query": "What is dupilumab and how does it help COPD patients?",
       "category": "medication",
-      "expected_sources": [],
+      "expected_sources": ["Type-2-inflammation-biomarkers"],
       "ground_truth": null
     },
     {
+      "id": 6,
+      "disease": "COPD",
       "query": "What are LAMA and LABA medications?",
       "category": "medication",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 7,
+      "disease": "COPD",
       "query": "What is the recommended dose of tiotropium for COPD?",
       "category": "medication",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 8,
+      "disease": "COPD",
       "query": "How is COPD diagnosed?",
       "category": "diagnosis",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 9,
+      "disease": "COPD",
       "query": "What is the GOLD classification for COPD?",
       "category": "diagnosis",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 10,
+      "disease": "COPD",
       "query": "What FEV1 values indicate COPD severity?",
       "category": "diagnosis",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 11,
+      "disease": "COPD",
       "query": "How should COPD exacerbations be managed?",
       "category": "exacerbation",
-      "expected_sources": [],
+      "expected_sources": ["mgmt-of-COPD-exacerbations", "GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 12,
+      "disease": "COPD",
       "query": "What are the signs of a COPD exacerbation?",
-      "category": "exacerbation",
-      "expected_sources": [],
+      "category": "symptoms",
+      "expected_sources": ["mgmt-of-COPD-exacerbations"],
       "ground_truth": null
     },
     {
+      "id": 13,
+      "disease": "COPD",
       "query": "When should a COPD patient be hospitalized?",
       "category": "exacerbation",
-      "expected_sources": [],
+      "expected_sources": ["mgmt-of-COPD-exacerbations"],
       "ground_truth": null
     },
     {
+      "id": 14,
+      "disease": "COPD",
       "query": "What lifestyle changes help manage COPD?",
       "category": "lifestyle",
-      "expected_sources": [],
+      "expected_sources": ["COPD_Patient_PatientBrochure", "GOLD-2025-Report"],
       "ground_truth": null
     },
     {
+      "id": 15,
+      "disease": "COPD",
       "query": "Is pulmonary rehabilitation effective for COPD?",
       "category": "lifestyle",
-      "expected_sources": [],
+      "expected_sources": ["GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 16,
+      "disease": "COPD",
+      "query": "What oxygen therapy is recommended for COPD?",
+      "category": "treatment",
+      "expected_sources": ["GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 17,
+      "disease": "COPD",
+      "query": "What are the risk factors for developing COPD?",
+      "category": "prevention",
+      "expected_sources": ["GOLD-2025-Report", "Chronic-obstructive-pulmonary-disease"],
+      "ground_truth": null
+    },
+    {
+      "id": 18,
+      "disease": "Asthma",
+      "query": "What are the GINA guidelines for asthma treatment?",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 19,
+      "disease": "Asthma",
+      "query": "How is asthma severity classified?",
+      "category": "diagnosis",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 20,
+      "disease": "Asthma",
+      "query": "What is the stepwise approach to asthma management?",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 21,
+      "disease": "Asthma",
+      "query": "What are the symptoms of asthma?",
+      "category": "symptoms",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 22,
+      "disease": "Asthma",
+      "query": "How is severe asthma defined?",
+      "category": "diagnosis",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ", "GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 23,
+      "disease": "Asthma",
+      "query": "What biologics are approved for severe asthma?",
+      "category": "medication",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ"],
+      "ground_truth": null
+    },
+    {
+      "id": 24,
+      "disease": "Asthma",
+      "query": "When should omalizumab be used for asthma?",
+      "category": "medication",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ"],
+      "ground_truth": null
+    },
+    {
+      "id": 25,
+      "disease": "Asthma",
+      "query": "What is the role of ICS in asthma treatment?",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 26,
+      "disease": "Asthma",
+      "query": "How should acute asthma exacerbations be managed?",
+      "category": "exacerbation",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 27,
+      "disease": "Asthma",
+      "query": "What triggers asthma attacks?",
+      "category": "prevention",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 28,
+      "disease": "Asthma",
+      "query": "How is asthma diagnosed in adults?",
+      "category": "diagnosis",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 29,
+      "disease": "Asthma",
+      "query": "What is the difference between asthma and COPD?",
+      "category": "diagnosis",
+      "expected_sources": ["GINA-2024-Strategy-Report", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 30,
+      "disease": "Asthma",
+      "query": "What is Type 2 inflammation in asthma?",
+      "category": "diagnosis",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ", "Type-2-inflammation-biomarkers"],
+      "ground_truth": null
+    },
+    {
+      "id": 31,
+      "disease": "Asthma",
+      "query": "What are the biomarkers for eosinophilic asthma?",
+      "category": "diagnosis",
+      "expected_sources": ["Type-2-inflammation-biomarkers"],
+      "ground_truth": null
+    },
+    {
+      "id": 32,
+      "disease": "Asthma",
+      "query": "When should LABA be added to asthma treatment?",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 33,
+      "disease": "Asthma",
+      "query": "What is asthma-COPD overlap syndrome?",
+      "category": "diagnosis",
+      "expected_sources": ["GINA-2024-Strategy-Report", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 34,
+      "disease": "Asthma",
+      "query": "How effective is mepolizumab for severe eosinophilic asthma?",
+      "category": "medication",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ"],
+      "ground_truth": null
+    },
+    {
+      "id": 35,
+      "disease": "Tuberculosis",
+      "query": "What is the standard treatment regimen for tuberculosis?",
+      "category": "treatment",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 36,
+      "disease": "Tuberculosis",
+      "query": "How is tuberculosis diagnosed?",
+      "category": "diagnosis",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 37,
+      "disease": "Tuberculosis",
+      "query": "What are the first-line drugs for TB treatment?",
+      "category": "medication",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 38,
+      "disease": "Tuberculosis",
+      "query": "What is drug-resistant tuberculosis?",
+      "category": "diagnosis",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 39,
+      "disease": "Tuberculosis",
+      "query": "How long is the TB treatment duration?",
+      "category": "treatment",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 40,
+      "disease": "Tuberculosis",
+      "query": "What are the symptoms of pulmonary tuberculosis?",
+      "category": "symptoms",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 41,
+      "disease": "Tuberculosis",
+      "query": "How is multidrug-resistant TB (MDR-TB) treated?",
+      "category": "treatment",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 42,
+      "disease": "Tuberculosis",
+      "query": "What is latent tuberculosis infection?",
+      "category": "diagnosis",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 43,
+      "disease": "Tuberculosis",
+      "query": "What are the challenges in TB control in Indonesia?",
+      "category": "prevention",
+      "expected_sources": ["Tuberculosis-in-Indonesia"],
+      "ground_truth": null
+    },
+    {
+      "id": 44,
+      "disease": "Tuberculosis",
+      "query": "How is TB transmitted?",
+      "category": "prevention",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 45,
+      "disease": "Tuberculosis",
+      "query": "What is the role of GeneXpert in TB diagnosis?",
+      "category": "diagnosis",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 46,
+      "disease": "Tuberculosis",
+      "query": "When should TB treatment be monitored?",
+      "category": "treatment",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 47,
+      "disease": "Tuberculosis",
+      "query": "What is directly observed therapy (DOT) for TB?",
+      "category": "treatment",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 48,
+      "disease": "Tuberculosis",
+      "query": "What are the side effects of TB medications?",
+      "category": "medication",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 49,
+      "disease": "Tuberculosis",
+      "query": "How is TB prevented in healthcare settings?",
+      "category": "prevention",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 50,
+      "disease": "Tuberculosis",
+      "query": "What is extrapulmonary tuberculosis?",
+      "category": "diagnosis",
+      "expected_sources": ["Operational-Manual-for-Tuberculosis"],
+      "ground_truth": null
+    },
+    {
+      "id": 51,
+      "disease": "Lung Cancer",
+      "query": "What is EGFR mutation in lung cancer?",
+      "category": "diagnosis",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib", "Limertinib-for-EGFR-mutation-positive-NSCLC"],
+      "ground_truth": null
+    },
+    {
+      "id": 52,
+      "disease": "Lung Cancer",
+      "query": "What is limertinib and how does it treat NSCLC?",
+      "category": "medication",
+      "expected_sources": ["Limertinib-for-EGFR-mutation-positive-NSCLC"],
+      "ground_truth": null
+    },
+    {
+      "id": 53,
+      "disease": "Lung Cancer",
+      "query": "How effective is limertinib compared to gefitinib?",
+      "category": "treatment",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib"],
+      "ground_truth": null
+    },
+    {
+      "id": 54,
+      "disease": "Lung Cancer",
+      "query": "What are the stages of non-small cell lung cancer?",
+      "category": "diagnosis",
+      "expected_sources": ["lung-early-stage-patient", "lung-metastatic-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 55,
+      "disease": "Lung Cancer",
+      "query": "What are the symptoms of lung cancer?",
+      "category": "symptoms",
+      "expected_sources": ["lung-early-stage-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 56,
+      "disease": "Lung Cancer",
+      "query": "What is metastatic lung cancer?",
+      "category": "diagnosis",
+      "expected_sources": ["lung-metastatic-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 57,
+      "disease": "Lung Cancer",
+      "query": "What targeted therapies are available for lung cancer?",
+      "category": "treatment",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib"],
+      "ground_truth": null
+    },
+    {
+      "id": 58,
+      "disease": "Lung Cancer",
+      "query": "What are the side effects of EGFR inhibitors?",
+      "category": "medication",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib"],
+      "ground_truth": null
+    },
+    {
+      "id": 59,
+      "disease": "Lung Cancer",
+      "query": "How is NSCLC diagnosed?",
+      "category": "diagnosis",
+      "expected_sources": ["lung-early-stage-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 60,
+      "disease": "Lung Cancer",
+      "query": "What is the prognosis for early-stage lung cancer?",
+      "category": "prognosis",
+      "expected_sources": ["lung-early-stage-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 61,
+      "disease": "Lung Cancer",
+      "query": "What treatment options exist for stage IV lung cancer?",
+      "category": "treatment",
+      "expected_sources": ["lung-metastatic-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 62,
+      "disease": "Lung Cancer",
+      "query": "What is the role of molecular testing in lung cancer?",
+      "category": "diagnosis",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib"],
+      "ground_truth": null
+    },
+    {
+      "id": 63,
+      "disease": "Lung Cancer",
+      "query": "How does smoking contribute to lung cancer?",
+      "category": "prevention",
+      "expected_sources": ["lung-early-stage-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 64,
+      "disease": "Lung Cancer",
+      "query": "What is the survival rate for metastatic NSCLC?",
+      "category": "prognosis",
+      "expected_sources": ["lung-metastatic-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 65,
+      "disease": "Lung Cancer",
+      "query": "What is gefitinib used for in lung cancer?",
+      "category": "medication",
+      "expected_sources": ["Efficacy-and-safety-of-limertinib"],
+      "ground_truth": null
+    },
+    {
+      "id": 66,
+      "disease": "CAP",
+      "query": "What is the empiric antibiotic treatment for community-acquired pneumonia?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 67,
+      "disease": "CAP",
+      "query": "How is community-acquired pneumonia diagnosed?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 68,
+      "disease": "CAP",
+      "query": "What are the severity scoring systems for pneumonia?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 69,
+      "disease": "CAP",
+      "query": "What is the CURB-65 score?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 70,
+      "disease": "CAP",
+      "query": "When should CAP patients be hospitalized?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 71,
+      "disease": "CAP",
+      "query": "What antibiotics are recommended for outpatient CAP?",
+      "category": "medication",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 72,
+      "disease": "CAP",
+      "query": "What are the common pathogens causing CAP?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 73,
+      "disease": "CAP",
+      "query": "How long should antibiotic treatment for CAP last?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 74,
+      "disease": "CAP",
+      "query": "What is the role of macrolides in CAP treatment?",
+      "category": "medication",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 75,
+      "disease": "CAP",
+      "query": "What is severe community-acquired pneumonia?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 76,
+      "disease": "CAP",
+      "query": "What are the symptoms of pneumonia?",
+      "category": "symptoms",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 77,
+      "disease": "CAP",
+      "query": "When should ICU admission be considered for CAP?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 78,
+      "disease": "CAP",
+      "query": "What is the PSI (Pneumonia Severity Index)?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 79,
+      "disease": "CAP",
+      "query": "Should corticosteroids be used in CAP treatment?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 80,
+      "disease": "CAP",
+      "query": "What imaging is recommended for diagnosing CAP?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 81,
+      "disease": "CAP",
+      "query": "How is aspiration pneumonia treated?",
+      "category": "treatment",
+      "expected_sources": ["idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 82,
+      "disease": "Long COVID",
+      "query": "What are the respiratory symptoms of long COVID?",
+      "category": "symptoms",
+      "expected_sources": ["Joan-B-Soriano—expert-on-asthma,-COPD,-and-long-CO"],
+      "ground_truth": null
+    },
+    {
+      "id": 83,
+      "disease": "Long COVID",
+      "query": "How does long COVID affect the lungs?",
+      "category": "symptoms",
+      "expected_sources": ["Joan-B-Soriano—expert-on-asthma,-COPD,-and-long-CO"],
+      "ground_truth": null
+    },
+    {
+      "id": 84,
+      "disease": "Long COVID",
+      "query": "What is the relationship between COPD and long COVID?",
+      "category": "diagnosis",
+      "expected_sources": ["Joan-B-Soriano—expert-on-asthma,-COPD,-and-long-CO"],
+      "ground_truth": null
+    },
+    {
+      "id": 85,
+      "disease": "Long COVID",
+      "query": "How is long COVID diagnosed?",
+      "category": "diagnosis",
+      "expected_sources": ["Joan-B-Soriano—expert-on-asthma,-COPD,-and-long-CO"],
+      "ground_truth": null
+    },
+    {
+      "id": 86,
+      "disease": "Long COVID",
+      "query": "What treatment options exist for respiratory long COVID?",
+      "category": "treatment",
+      "expected_sources": ["Joan-B-Soriano—expert-on-asthma,-COPD,-and-long-CO"],
+      "ground_truth": null
+    },
+    {
+      "id": 87,
+      "disease": "General",
+      "query": "What is the importance of chronic cough evaluation?",
+      "category": "symptoms",
+      "expected_sources": ["Why-it's-more-than-'just-a-cough'"],
+      "ground_truth": null
+    },
+    {
+      "id": 88,
+      "disease": "General",
+      "query": "What conditions cause chronic cough?",
+      "category": "diagnosis",
+      "expected_sources": ["Why-it's-more-than-'just-a-cough'"],
+      "ground_truth": null
+    },
+    {
+      "id": 89,
+      "disease": "General",
+      "query": "What are the different types of pulmonary function tests?",
+      "category": "diagnosis",
+      "expected_sources": ["179full"],
+      "ground_truth": null
+    },
+    {
+      "id": 90,
+      "disease": "General",
+      "query": "How is spirometry performed?",
+      "category": "diagnosis",
+      "expected_sources": ["179full", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 91,
+      "disease": "General",
+      "query": "What is FEV1/FVC ratio and what does it indicate?",
+      "category": "diagnosis",
+      "expected_sources": ["179full", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 92,
+      "disease": "Cross-disease",
+      "query": "How do biologics work in respiratory diseases?",
+      "category": "treatment",
+      "expected_sources": ["Severe-Asthma-CPG-ERJ", "Type-2-inflammation-biomarkers"],
+      "ground_truth": null
+    },
+    {
+      "id": 93,
+      "disease": "Cross-disease",
+      "query": "What role do eosinophils play in lung diseases?",
+      "category": "diagnosis",
+      "expected_sources": ["Type-2-inflammation-biomarkers", "Severe-Asthma-CPG-ERJ"],
+      "ground_truth": null
+    },
+    {
+      "id": 94,
+      "disease": "Cross-disease",
+      "query": "Compare treatment approaches for asthma vs COPD",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 95,
+      "disease": "Cross-disease",
+      "query": "What is the role of smoking cessation in respiratory diseases?",
+      "category": "prevention",
+      "expected_sources": ["GOLD-2025-Report", "GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 96,
+      "disease": "Cross-disease",
+      "query": "How does air pollution affect respiratory health?",
+      "category": "prevention",
+      "expected_sources": ["GOLD-2025-Report", "GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 97,
+      "disease": "Cross-disease",
+      "query": "What vaccinations are recommended for patients with chronic lung disease?",
+      "category": "prevention",
+      "expected_sources": ["GOLD-2025-Report", "idsaats-cap"],
+      "ground_truth": null
+    },
+    {
+      "id": 98,
+      "disease": "Cross-disease",
+      "query": "How is dyspnea managed across different respiratory conditions?",
+      "category": "treatment",
+      "expected_sources": ["GOLD-2025-Report", "GINA-2024-Strategy-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 99,
+      "disease": "Cross-disease",
+      "query": "What imaging techniques are used for diagnosing lung diseases?",
+      "category": "diagnosis",
+      "expected_sources": ["idsaats-cap", "lung-early-stage-patient"],
+      "ground_truth": null
+    },
+    {
+      "id": 100,
+      "disease": "Cross-disease",
+      "query": "When should patients with respiratory symptoms be referred to a specialist?",
+      "category": "treatment",
+      "expected_sources": ["GINA-2024-Strategy-Report", "GOLD-2025-Report"],
+      "ground_truth": null
+    },
+    {
+      "id": 101,
+      "disease": "Cross-disease",
+      "query": "What is the role of oxygen therapy in chronic respiratory diseases?",
+      "category": "treatment",
+      "expected_sources": ["GOLD-2025-Report", "Chronic-obstructive-pulmonary-disease"],
+      "ground_truth": null
+    },
+    {
+      "id": 102,
+      "disease": "Cross-disease",
+      "query": "How do comorbidities affect the management of lung diseases?",
+      "category": "treatment",
+      "expected_sources": ["GOLD-2025-Report", "GINA-2024-Strategy-Report"],
       "ground_truth": null
     }
   ]

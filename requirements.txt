@@ -13,6 +13,7 @@ huggingface_hub>=0.20.0
 chromadb>=0.4.20
 pinecone-client>=3.0.0
 sentence-transformers>=2.2.2
+einops>=0.7.0
 
 # Retrieval & Search
 rank-bm25>=0.2.2

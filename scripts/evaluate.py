@@ -5,9 +5,11 @@ RAG Evaluation Script
 Run evaluation on the RAG pipeline with different retrieval methods.
 
 Usage:
-    python scripts/evaluate.py                     # Run full evaluation
+    python scripts/evaluate.py                     # Run full evaluation (102 queries)
     python scripts/evaluate.py --method hybrid     # Evaluate specific method
     python scripts/evaluate.py --compare           # Compare all methods
+    python scripts/evaluate.py --by-disease        # Disease-specific eval (for paper)
+    python scripts/evaluate.py --disease COPD      # Evaluate only COPD queries
     python scripts/evaluate.py --quick             # Quick eval (5 queries)
     python scripts/evaluate.py --use-openai        # Use OpenAI as judge
 """
@@ -316,6 +318,18 @@ def main():
     )
     
     parser.add_argument(
+        "--by-disease",
+        action="store_true",
+        help="Evaluate and report results grouped by disease (for research paper)"
+    )
+    
+    parser.add_argument(
+        "--disease",
+        type=str,
+        help="Filter queries by disease (COPD, Asthma, Tuberculosis, etc.)"
+    )
+    
+    parser.add_argument(
         "--quick",
         action="store_true",
         help="Quick evaluation with 5 queries"
@@ -351,8 +365,18 @@ def main():
     # Ensure dataset exists
     dataset = ensure_dataset_exists()
     
-    # Get queries
-    if args.category:
+    # Show dataset info
+    diseases = dataset.get_diseases()
+    categories = dataset.get_categories()
+    logger.info(f"Dataset: {len(dataset)} queries, {len(diseases)} diseases, {len(categories)} categories")
+    logger.info(f"Diseases: {', '.join(diseases)}")
+    logger.info(f"Categories: {', '.join(categories)}")
+    
+    # Get queries with filters
+    if args.disease:
+        queries = dataset.get_queries_by_disease(args.disease)
+        logger.info(f"Using {len(queries)} queries for disease: {args.disease}")
+    elif args.category:
         queries = dataset.get_queries(category=args.category)
         logger.info(f"Using {len(queries)} queries from category: {args.category}")
     else:
@@ -393,8 +417,83 @@ def main():
     # Run evaluation
     start_time = time.time()
     
-    if args.compare:
+    if args.by_disease:
+        # Disease-specific evaluation for research paper
+        logger.info("\n" + "="*60)
+        logger.info("Running Disease-Specific Evaluation (Research Paper Mode)")
+        logger.info("="*60)
+        
+        disease_reports = evaluator.evaluate_by_disease(
+            dataset=dataset,
+            method=args.method,
+        )
+        
+        # Print summary table for paper
+        print("\n" + "="*83)
+        print("DISEASE-SPECIFIC EVALUATION RESULTS")
+        print("="*83)
+        print(evaluator.generate_disease_summary_table(disease_reports))
+        print("="*83)
+        
+        # Save disease reports
+        disease_summary = {
+            "method": args.method,
+            "timestamp": timestamp,
+            "diseases": {}
+        }
+        for disease, report in disease_reports.items():
+            disease_summary["diseases"][disease] = {
+                "num_queries": report.num_queries,
+                "faithfulness": round(report.avg_faithfulness, 4),
+                "answer_relevancy": round(report.avg_answer_relevancy, 4),
+                "context_relevancy": round(report.avg_context_relevancy, 4),
+                "overall": round(report.overall_score, 4),
+            }
+        
+        summary_path = output_dir / f"disease_evaluation_{timestamp}.json"
+        with open(summary_path, "w") as f:
+            json.dump(disease_summary, f, indent=2)
+        print(f"\n📊 Disease summary saved to: {summary_path}")
+        
+        reports = disease_reports
+        
+    elif args.compare:
+        # Compare all methods - now respects --disease and --category filters
+        filter_info = ""
+        if args.disease:
+            filter_info = f" (filtered by disease: {args.disease})"
+        elif args.category:
+            filter_info = f" (filtered by category: {args.category})"
+        
+        logger.info(f"\nComparing retrieval methods on {len(queries)} queries{filter_info}")
         reports = run_comparison(evaluator, queries)
+        
+        # Save comparison summary
+        comparison_summary = {
+            "type": "method_comparison",
+            "timestamp": timestamp,
+            "num_queries": len(queries),
+            "filter": {
+                "disease": args.disease,
+                "category": args.category,
+            },
+            "methods": {}
+        }
+        for method, report in reports.items():
+            if hasattr(report, 'avg_faithfulness'):
+                comparison_summary["methods"][method] = {
+                    "faithfulness": round(report.avg_faithfulness, 4),
+                    "answer_relevancy": round(report.avg_answer_relevancy, 4),
+                    "context_relevancy": round(report.avg_context_relevancy, 4),
+                    "overall": round(report.overall_score, 4),
+                    "avg_latency_ms": round(report.avg_latency_ms, 2),
+                }
+        
+        comparison_path = output_dir / f"comparison_{timestamp}.json"
+        with open(comparison_path, "w") as f:
+            json.dump(comparison_summary, f, indent=2)
+        print(f"\n📊 Comparison summary saved to: {comparison_path}")
+        
     else:
         report = run_single_method_eval(evaluator, queries, args.method)
         reports = {args.method: report}
@@ -406,10 +505,10 @@ def main():
     for method, report in reports.items():
         if hasattr(report, 'to_dict'):
             json_path = output_dir / f"eval_{method}_{timestamp}.json"
-            evaluator.save_report(report, str(json_path))
+            evaluator.save_report(report, str(output_dir))
     
     # Generate HTML report
-    if args.html:
+    if args.html and not args.by_disease:
         html_path = output_dir / f"report_{timestamp}.html"
         generate_html_report(reports, str(html_path))
         print(f"\n📊 HTML report: {html_path}")

@@ -272,7 +272,7 @@ class RAGEvaluator:
         self,
         queries: List[str],
         methods: List[str] = ["dense", "hybrid", "reranked"],
-        collection_name: str = "copd_documents",
+        collection_name: str = "pulmonary_documents",
     ) -> Dict[str, EvaluationReport]:
         """
         Compare different retrieval methods.
@@ -330,6 +330,123 @@ class RAGEvaluator:
             print(report.summary())
         
         return reports
+    
+    def evaluate_by_disease(
+        self,
+        dataset,  # TestDataset
+        method: str = "reranked",
+        collection_name: str = "pulmonary_documents",
+    ) -> Dict[str, EvaluationReport]:
+        """
+        Evaluate RAG pipeline grouped by disease category.
+        
+        Args:
+            dataset: TestDataset with disease-labeled queries
+            method: Retrieval method to use
+            collection_name: ChromaDB collection name
+            
+        Returns:
+            Dict mapping disease name to EvaluationReport
+        """
+        from src.rag import RAGPipeline
+        from src.generation.llm import LLMFactory
+        
+        # Get LLM for generation
+        llm = LLMFactory.get_llm(prefer_local=True)
+        if llm is None:
+            raise RuntimeError("No LLM available for RAG pipeline")
+        
+        # Configure pipeline
+        if method == "dense":
+            pipeline = RAGPipeline(
+                collection_name=collection_name,
+                llm=llm,
+                use_hybrid=False,
+                use_reranker=False,
+            )
+        elif method == "hybrid":
+            pipeline = RAGPipeline(
+                collection_name=collection_name,
+                llm=llm,
+                use_hybrid=True,
+                use_reranker=False,
+            )
+        else:  # reranked
+            pipeline = RAGPipeline(
+                collection_name=collection_name,
+                llm=llm,
+                use_hybrid=True,
+                use_reranker=True,
+            )
+        
+        # Group queries by disease
+        disease_groups = dataset.get_by_disease()
+        disease_reports = {}
+        
+        for disease, queries in disease_groups.items():
+            logger.info(f"\nEvaluating {disease} ({len(queries)} queries)...")
+            query_strings = [q.query for q in queries]
+            
+            report = self.evaluate_rag_pipeline(query_strings, pipeline, f"{method}_{disease}")
+            disease_reports[disease] = report
+            
+            print(f"\n{disease}: Faithfulness={report.avg_faithfulness:.2%}, "
+                  f"Answer Rel={report.avg_answer_relevancy:.2%}, "
+                  f"Context Rel={report.avg_context_relevancy:.2%}")
+        
+        return disease_reports
+    
+    def generate_disease_summary_table(
+        self,
+        disease_reports: Dict[str, 'EvaluationReport'],
+    ) -> str:
+        """
+        Generate a summary table suitable for research paper.
+        
+        Args:
+            disease_reports: Dict mapping disease to EvaluationReport
+            
+        Returns:
+            Formatted table string
+        """
+        header = f"\n{'Disease':<25} {'Queries':>8} {'Faithful':>10} {'Ans Rel':>10} {'Ctx Rel':>10} {'Overall':>10}"
+        separator = "-" * 83
+        
+        rows = [header, separator]
+        
+        total_queries = 0
+        total_faith = 0
+        total_ans = 0
+        total_ctx = 0
+        
+        for disease, report in sorted(disease_reports.items()):
+            n = report.num_queries
+            total_queries += n
+            total_faith += report.avg_faithfulness * n
+            total_ans += report.avg_answer_relevancy * n
+            total_ctx += report.avg_context_relevancy * n
+            
+            overall = (report.avg_faithfulness + report.avg_answer_relevancy + report.avg_context_relevancy) / 3
+            rows.append(
+                f"{disease:<25} {n:>8} {report.avg_faithfulness:>10.2%} "
+                f"{report.avg_answer_relevancy:>10.2%} {report.avg_context_relevancy:>10.2%} "
+                f"{overall:>10.2%}"
+            )
+        
+        rows.append(separator)
+        
+        # Overall averages
+        if total_queries > 0:
+            avg_faith = total_faith / total_queries
+            avg_ans = total_ans / total_queries
+            avg_ctx = total_ctx / total_queries
+            avg_overall = (avg_faith + avg_ans + avg_ctx) / 3
+            rows.append(
+                f"{'OVERALL':<25} {total_queries:>8} {avg_faith:>10.2%} "
+                f"{avg_ans:>10.2%} {avg_ctx:>10.2%} {avg_overall:>10.2%}"
+            )
+        
+        return "\n".join(rows)
     
     def save_report(
         self,

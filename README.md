@@ -122,19 +122,77 @@ docker compose up -d --build        # Fresh start
 
 RAGAS-style LLM-as-judge metrics: **Faithfulness** | **Answer Relevancy** | **Context Relevancy**
 
+**Test Dataset:** 102 queries across 8 disease categories (COPD, Asthma, Tuberculosis, Lung Cancer, CAP, Long COVID, General, Cross-disease)
+
 ```bash
-# Quick evaluation (5 queries, local LLM judge)
-docker compose exec rag-app python scripts/evaluate.py --quick
+# Full evaluation on all 102 queries
+docker compose exec rag-app python scripts/evaluate.py
+
+# Disease-specific evaluation (for research paper)
+docker compose exec rag-app python scripts/evaluate.py --by-disease
 
 # Compare retrieval methods (dense vs hybrid vs reranked)
 docker compose exec rag-app python scripts/evaluate.py --compare
 
-# Full options
-docker compose exec rag-app python scripts/evaluate.py \
-    --method dense|hybrid|reranked \
-    --category treatment|diagnosis|medication \
-    --use-openai \     # Use OpenAI as judge (more accurate)
-    --html             # Generate visual HTML report
+# Quick evaluation (5 queries, for testing)
+docker compose exec rag-app python scripts/evaluate.py --quick
+```
+
+### Compare Methods by Disease (Recommended for Research Paper)
+Compare all 3 retrieval methods on a specific disease for method comparison table:
+
+```bash
+# Compare methods on COPD queries (17 queries × 3 methods)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease COPD
+
+# Compare methods on Asthma queries
+docker compose exec rag-app python scripts/evaluate.py --compare --disease Asthma
+
+# Compare methods on all queries (102 × 3 = 306 evaluations - takes long time)
+docker compose exec rag-app python scripts/evaluate.py --compare
+```
+
+### Evaluate by Disease (Recommended for Large Datasets)
+Run evaluation one disease at a time to manage time and get incremental results:
+
+```bash
+# COPD (17 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease COPD
+
+# Asthma (17 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease Asthma
+
+# Tuberculosis (16 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease Tuberculosis
+
+# Lung Cancer (15 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease "Lung Cancer"
+
+# Community-Acquired Pneumonia (16 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease CAP
+
+# Long COVID (5 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease "Long COVID"
+
+# General Pulmonary (5 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease General
+
+# Cross-disease (11 queries)
+docker compose exec rag-app python scripts/evaluate.py --compare --disease Cross-disease
+```
+
+### Additional Options
+
+```bash
+# Filter by clinical category
+docker compose exec rag-app python scripts/evaluate.py --category treatment
+docker compose exec rag-app python scripts/evaluate.py --category diagnosis
+
+# Use OpenAI as judge (faster & more accurate, requires API key)
+docker compose exec rag-app python scripts/evaluate.py --disease COPD --use-openai
+
+# Generate HTML report with visualizations
+docker compose exec rag-app python scripts/evaluate.py --compare --html
 ```
 
 **Outputs:** `data/evaluation/reports/` (JSON + HTML reports)

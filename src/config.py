@@ -28,7 +28,7 @@ class Config:
     PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "pulmorag-index")
 
     # Model Configuration
-    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+    EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "nomic-ai/nomic-embed-text-v1.5")
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4")
 
     # Reranker Configuration
@@ -50,8 +50,8 @@ class Config:
     # RAG Configuration
     TOP_K_RETRIEVAL = int(os.getenv("TOP_K_RETRIEVAL", 5))
     TOP_K_RERANK = int(os.getenv("TOP_K_RERANK", 5))
-    CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 500))
-    CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 50))
+    CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 1000))
+    CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 100))
 
     # Hybrid Retrieval Configuration
     BM25_INDEX_PATH = os.getenv("BM25_INDEX_PATH", str(PROJECT_ROOT / "data" / "bm25_index"))

@@ -18,18 +18,25 @@ class TestQuery:
     category: str = "general"
     expected_sources: List[str] = None
     ground_truth: str = None  # Optional ground truth answer
+    id: int = None  # Unique query identifier
+    disease: str = None  # Disease category (COPD, Asthma, etc.)
     
     def __post_init__(self):
         if self.expected_sources is None:
             self.expected_sources = []
     
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        result = {
             "query": self.query,
             "category": self.category,
             "expected_sources": self.expected_sources,
             "ground_truth": self.ground_truth,
         }
+        if self.id is not None:
+            result["id"] = self.id
+        if self.disease is not None:
+            result["disease"] = self.disease
+        return result
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "TestQuery":
@@ -38,6 +45,8 @@ class TestQuery:
             category=data.get("category", "general"),
             expected_sources=data.get("expected_sources", []),
             ground_truth=data.get("ground_truth"),
+            id=data.get("id"),
+            disease=data.get("disease"),
         )
 
 
@@ -81,6 +90,38 @@ class TestDataset:
                 result[q.category] = []
             result[q.category].append(q)
         return result
+    
+    def get_by_disease(self) -> Dict[str, List[TestQuery]]:
+        """Group queries by disease"""
+        result = {}
+        for q in self.queries:
+            disease = q.disease or "Unknown"
+            if disease not in result:
+                result[disease] = []
+            result[disease].append(q)
+        return result
+    
+    def get_queries_by_disease(self, disease: str) -> List[str]:
+        """
+        Get query strings filtered by disease.
+        
+        Args:
+            disease: Disease name to filter by
+            
+        Returns:
+            List of query strings for that disease
+        """
+        return [q.query for q in self.queries if q.disease == disease]
+    
+    def get_diseases(self) -> List[str]:
+        """Get list of unique diseases in the dataset"""
+        diseases = set(q.disease for q in self.queries if q.disease)
+        return sorted(list(diseases))
+    
+    def get_categories(self) -> List[str]:
+        """Get list of unique categories in the dataset"""
+        categories = set(q.category for q in self.queries if q.category)
+        return sorted(list(categories))
     
     def save(self, path: str = None) -> str:
         """

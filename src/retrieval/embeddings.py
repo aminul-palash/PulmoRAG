@@ -34,7 +34,7 @@ class SentenceTransformerEmbedder(BaseEmbedder):
     
     def __init__(
         self,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str = "nomic-ai/nomic-embed-text-v1.5",
         device: Optional[str] = None,
     ):
         """
@@ -47,7 +47,7 @@ class SentenceTransformerEmbedder(BaseEmbedder):
         from sentence_transformers import SentenceTransformer
         
         logger.info(f"Loading embedding model: {model_name}")
-        self.model = SentenceTransformer(model_name, device=device)
+        self.model = SentenceTransformer(model_name, trust_remote_code=True, device=device)
         self._dimension = self.model.get_sentence_embedding_dimension()
         logger.info(f"Embedding model loaded (dim={self._dimension})")
     
@@ -148,7 +148,7 @@ def get_embedder(
         Embedder instance
     """
     if embedder_type == "local":
-        model = model_name or "all-MiniLM-L6-v2"
+        model = model_name or "nomic-ai/nomic-embed-text-v1.5"
         return SentenceTransformerEmbedder(model_name=model)
     elif embedder_type == "openai":
         model = model_name or "text-embedding-3-small"
