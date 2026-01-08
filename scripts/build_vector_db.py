@@ -104,7 +104,7 @@ def build_vector_db(
 
 def test_search(
     query: str = "What is COPD treatment?",
-    collection_name: str = "copd_documents",
+    collection_name: str = "pulmonary_documents",
     top_k: int = 3,
     mode: str = "hybrid",
 ) -> None:
@@ -145,7 +145,7 @@ def test_search(
 
 def compare_retrieval(
     query: str = "What is COPD treatment?",
-    collection_name: str = "copd_documents",
+    collection_name: str = "pulmonary_documents",
     top_k: int = 3,
     include_reranked: bool = True,
 ) -> None:
@@ -183,7 +183,7 @@ def main():
     )
     build_parser.add_argument(
         "--collection", "-n",
-        default="copd_documents",
+        default="pulmonary_documents",
         help="Collection name"
     )
     build_parser.add_argument(
@@ -213,7 +213,7 @@ def main():
     )
     test_parser.add_argument(
         "--collection", "-n",
-        default="copd_documents",
+        default="pulmonary_documents",
         help="Collection name"
     )
     test_parser.add_argument(
@@ -239,7 +239,7 @@ def main():
     )
     compare_parser.add_argument(
         "--collection", "-n",
-        default="copd_documents",
+        default="pulmonary_documents",
         help="Collection name"
     )
     compare_parser.add_argument(
