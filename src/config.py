@@ -39,7 +39,7 @@ class Config:
     # Local LLM Configuration
     LOCAL_MODEL_PATH = os.getenv(
         "LOCAL_MODEL_PATH",
-        str(PROJECT_ROOT / "models" / "mistrallite.Q4_K_M.gguf")
+        str(PROJECT_ROOT / "models" / "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf")
     )
     LOCAL_MODEL_CTX = int(os.getenv("LOCAL_MODEL_CTX", 4096))
     LOCAL_MODEL_GPU_LAYERS = int(os.getenv("LOCAL_MODEL_GPU_LAYERS", 0))

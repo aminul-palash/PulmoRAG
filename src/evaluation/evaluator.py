@@ -252,6 +252,10 @@ class RAGEvaluator:
                 # Run RAG pipeline
                 rag_response = rag_pipeline.run(query, stream=False)
                 
+                # Debug: log the generated answer
+                answer_preview = rag_response.answer[:200] if rag_response.answer else "(empty)"
+                logger.info(f"Generated answer preview: {answer_preview}")
+                
                 # Evaluate
                 result = self.evaluate_single(
                     query=query,

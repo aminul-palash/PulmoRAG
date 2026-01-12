@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Download script for local LLM model (MistralLite GGUF)"""
+"""Download script for local LLM model (LLaMA-3.1-8B-Instruct GGUF)"""
 
 import os
 import sys
@@ -12,22 +12,42 @@ from huggingface_hub import hf_hub_download
 from src.logger import logger
 
 
-def download_mistrallite_model(
-    repo_id: str = "TheBloke/MistralLite-7B-GGUF",
-    filename: str = "mistrallite.Q4_K_M.gguf",
+# Model configurations
+MODEL_CONFIGS = {
+    "llama-3.1-8b": {
+        "repo_id": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+        "filename": "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+    },
+    "mistrallite": {
+        "repo_id": "TheBloke/MistralLite-7B-GGUF",
+        "filename": "mistrallite.Q4_K_M.gguf",
+    },
+}
+
+DEFAULT_MODEL = "llama-3.1-8b"
+
+
+def download_model(
+    model_name: str = DEFAULT_MODEL,
     local_dir: str = "models",
 ) -> str:
     """
-    Download the quantized MistralLite GGUF model from Hugging Face.
+    Download a quantized GGUF model from Hugging Face.
     
     Args:
-        repo_id: Hugging Face repository ID
-        filename: Model filename to download
+        model_name: Model name (llama-3.1-8b or mistrallite)
         local_dir: Local directory to save the model
         
     Returns:
         Path to the downloaded model file
     """
+    if model_name not in MODEL_CONFIGS:
+        raise ValueError(f"Unknown model: {model_name}. Available: {list(MODEL_CONFIGS.keys())}")
+    
+    config = MODEL_CONFIGS[model_name]
+    repo_id = config["repo_id"]
+    filename = config["filename"]
+    
     logger.info(f"Downloading model {filename} from {repo_id}...")
     
     # Create models directory if it doesn't exist
@@ -48,18 +68,38 @@ def download_mistrallite_model(
 
 
 def check_model_exists(
+    model_name: str = DEFAULT_MODEL,
     local_dir: str = "models",
-    filename: str = "mistrallite.Q4_K_M.gguf",
 ) -> bool:
     """Check if the model file already exists."""
+    if model_name not in MODEL_CONFIGS:
+        return False
+    filename = MODEL_CONFIGS[model_name]["filename"]
     model_path = Path(local_dir) / filename
     return model_path.exists()
+
+
+def get_model_path(
+    model_name: str = DEFAULT_MODEL,
+    local_dir: str = "models",
+) -> Path:
+    """Get the path to the model file."""
+    if model_name not in MODEL_CONFIGS:
+        raise ValueError(f"Unknown model: {model_name}")
+    filename = MODEL_CONFIGS[model_name]["filename"]
+    return Path(local_dir) / filename
 
 
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Download MistralLite GGUF model")
+    parser = argparse.ArgumentParser(description="Download GGUF model for local inference")
+    parser.add_argument(
+        "--model",
+        default=DEFAULT_MODEL,
+        choices=list(MODEL_CONFIGS.keys()),
+        help=f"Model to download (default: {DEFAULT_MODEL})",
+    )
     parser.add_argument(
         "--model-dir",
         default="models",
@@ -70,11 +110,24 @@ if __name__ == "__main__":
         action="store_true",
         help="Force re-download even if model exists",
     )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List available models",
+    )
     args = parser.parse_args()
     
-    if check_model_exists(args.model_dir) and not args.force:
-        print(f"Model already exists in {args.model_dir}/")
+    if args.list:
+        print("Available models:")
+        for name, config in MODEL_CONFIGS.items():
+            marker = " (default)" if name == DEFAULT_MODEL else ""
+            print(f"  - {name}{marker}: {config['filename']}")
+        sys.exit(0)
+    
+    if check_model_exists(args.model, args.model_dir) and not args.force:
+        model_path = get_model_path(args.model, args.model_dir)
+        print(f"Model already exists: {model_path}")
         print("Use --force to re-download")
     else:
-        file_path = download_mistrallite_model(local_dir=args.model_dir)
+        file_path = download_model(model_name=args.model, local_dir=args.model_dir)
         print(f"Downloaded model to: {file_path}")

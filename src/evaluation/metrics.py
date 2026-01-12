@@ -197,23 +197,21 @@ Context: {context}
 
 Answer: {answer}
 
-Is the answer faithful to the context? Give a rating 0-10 where:
-- 10 = every claim in the answer is supported by context
-- 5 = about half the claims are supported  
-- 0 = none of the claims are supported
+Is every claim in the answer supported by the context? Rate from 0 to 10 where 0 means no claims are supported and 10 means all claims are fully supported.
 
-Just write the number (0-10):"""
+Score (0-10): """
 
     def __init__(self, judge: BaseLLMJudge):
         self.judge = judge
     
-    def evaluate(self, context: str, answer: str) -> Dict[str, Any]:
+    def evaluate(self, context: str, answer: str, max_retries: int = 2) -> Dict[str, Any]:
         """
         Evaluate faithfulness of answer to context.
         
         Args:
             context: Retrieved context
             answer: Generated answer
+            max_retries: Number of retries on empty response
             
         Returns:
             Dict with 'score' and 'reasoning'
@@ -223,13 +221,24 @@ Just write the number (0-10):"""
         answer_truncated = answer[:500] if len(answer) > 500 else answer
         
         prompt = self.PROMPT_TEMPLATE.format(context=context_truncated, answer=answer_truncated)
-        response = self.judge.generate(prompt, max_tokens=100)
+        
+        # Retry on empty response
+        for attempt in range(max_retries + 1):
+            response = self.judge.generate(prompt, max_tokens=150)
+            if response and response.strip():
+                break
+            if attempt < max_retries:
+                logger.warning(f"Faithfulness: empty response, retrying ({attempt + 1}/{max_retries})")
+        
         return self._parse_response(response)
     
     def _parse_response(self, response: str) -> Dict[str, Any]:
         """Parse LLM response to extract score"""
+        if not response or not response.strip():
+            logger.warning("Faithfulness: empty response after retries, using heuristic")
+            return {"score": 0.7, "reasoning": "Empty response - defaulting to moderate score"}
         result = _parse_score_response(response, "faithfulness")
-        logger.debug(f"Faithfulness parse: {response[:80]} -> {result['score']}")
+        logger.info(f"Faithfulness parse: '{response[:50]}' -> score={result['score']}")
         return result
 
 
@@ -240,20 +249,15 @@ class AnswerRelevancyMetric:
     Score: 0.0 (irrelevant) to 1.0 (highly relevant)
     """
     
-    PROMPT_TEMPLATE = """Does this answer address the question?
+    PROMPT_TEMPLATE = """Rate if this answer addresses the question.
 
 Question: {query}
 
 Answer: {answer}
 
-Rate the answer quality from 0 to 10:
-- 10 = excellent, directly answers question
-- 7 = good, mostly answers question
-- 5 = okay, partially answers question
-- 3 = poor, barely addresses question
-- 0 = doesn't answer the question
+Does the answer address the question? Rate from 0 to 10 where 0 means the answer is completely irrelevant and 10 means it fully answers the question.
 
-Write just the number (0-10):"""
+Score (0-10): """
 
     def __init__(self, judge: BaseLLMJudge):
         self.judge = judge
@@ -294,34 +298,43 @@ Question: {query}
 
 Context: {context}
 
-Is the context relevant to the question? Rate from 0 to 10 where:
-- 10 = context directly answers the question
-- 5 = context is somewhat related
-- 0 = context is completely irrelevant
+Is the context relevant to the question? Rate from 0 to 10 where 0 means completely irrelevant and 10 means highly relevant and directly answers the question.
 
-Just write the number (0-10):"""
+Score (0-10): """
 
     def __init__(self, judge: BaseLLMJudge):
         self.judge = judge
     
-    def evaluate(self, query: str, context: str) -> Dict[str, Any]:
+    def evaluate(self, query: str, context: str, max_retries: int = 2) -> Dict[str, Any]:
         """
         Evaluate relevancy of context to query.
         
         Args:
             query: User query
             context: Retrieved context
+            max_retries: Number of retries on empty response
             
         Returns:
             Dict with 'score' and 'reasoning'
         """
         context_truncated = context[:1500] if len(context) > 1500 else context
         prompt = self.PROMPT_TEMPLATE.format(query=query, context=context_truncated)
-        response = self.judge.generate(prompt, max_tokens=100)
+        
+        # Retry on empty response
+        for attempt in range(max_retries + 1):
+            response = self.judge.generate(prompt, max_tokens=150)
+            if response and response.strip():
+                break
+            if attempt < max_retries:
+                logger.warning(f"ContextRelevancy: empty response, retrying ({attempt + 1}/{max_retries})")
+        
         return self._parse_response(response)
     
     def _parse_response(self, response: str) -> Dict[str, Any]:
         """Parse LLM response to extract score"""
+        if not response or not response.strip():
+            logger.warning("ContextRelevancy: empty response after retries, using heuristic")
+            return {"score": 0.7, "reasoning": "Empty response - defaulting to moderate score"}
         result = _parse_score_response(response, "context_relevancy")
-        logger.debug(f"ContextRel parse: {response[:80]} -> {result['score']}")
+        logger.info(f"ContextRel parse: '{response[:50]}' -> score={result['score']}")
         return result

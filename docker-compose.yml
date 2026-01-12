@@ -17,7 +17,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - PINECONE_API_KEY=${PINECONE_API_KEY}
       - PINECONE_ENV=${PINECONE_ENV}
-      - LOCAL_MODEL_PATH=/app/models/mistrallite.Q4_K_M.gguf
+      - LOCAL_MODEL_PATH=/app/models/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf
       - USE_LOCAL_LLM=${USE_LOCAL_LLM:-auto}
     networks:
       - rag-network

@@ -212,7 +212,8 @@ class LLMFactory:
             local_model_path = config.LOCAL_MODEL_PATH
             if Path(local_model_path).exists():
                 if cls._local_llm_instance is None:
-                    logger.info("Using local LLM (MistralLite)")
+                    model_name = Path(local_model_path).stem
+                    logger.info(f"Using local LLM ({model_name})")
                     cls._local_llm_instance = LocalLLM(model_path=local_model_path)
                 return cls._local_llm_instance
             else:
